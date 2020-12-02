@@ -1,6 +1,10 @@
+// const { default: fetch } = require('node-fetch');
+
 const category = document.getElementById('categories-select');
 const displayButton = document.getElementById('display-button');
 const newsContainer = document.getElementById('news-container');
+const searchField = document.getElementById('search-field');
+const searchBtn = document.getElementById('search-btn');
 
 const renderData = (data) => {
   const newsArray = data.news;
@@ -28,3 +32,31 @@ const renderData = (data) => {
     newsContainer.appendChild(newsElement);
   }
 };
+
+searchBtn.addEventListener('click', () => {
+  fetch(`/search/${searchField.value}`)
+    .then((response) => response.json())
+    .then(renderData);
+});
+
+function rendering() {
+  if (!searchField.value) {
+    fetch('/latest-news')
+      .then((response) => response.json())
+      .then(renderData);
+  }
+}
+
+rendering();
+
+// () => {
+
+// if (searchField.value) {
+//   search();
+// }
+
+// } else {
+//   // console.log('Hee');
+//   // document.removeChild(removeChild);
+
+// }
