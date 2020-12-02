@@ -1,5 +1,8 @@
 // const { default: fetch } = require('node-fetch');
 
+// const { response } = require('express');
+// const { default: fetch } = require('node-fetch');
+
 const category = document.getElementById('categories-select');
 const inputLanguage = document.getElementById('languages-select');
 const displayButton = document.getElementById('display-button');
@@ -22,9 +25,12 @@ const renderData = (data) => {
     description.setAttribute('class', 'description');
     image.setAttribute('class', 'image');
 
-    title.textContent = newsArray[i].title;
+    title.textContent = newsArray[i].title ? newsArray[i].title : '';
     description.textContent = newsArray[i].description;
-    image.src = newsArray[i].image;
+    image.src = newsArray[i].image.includes('http')
+      ? newsArray[i].image
+      : 'https://www.thebalancecareers.com/thmb/25JVJEa7LCrP8pAVSEIZsvcQ67s=/3000x2063/filters:fill(auto,1)/452926771-57a555e65f9b58974ac6c478.jpg';
+
     newsText.appendChild(title);
     newsText.appendChild(description);
     newsElement.appendChild(newsText);
@@ -40,32 +46,28 @@ searchBtn.addEventListener('click', () => {
     language = inputLanguage.value;
   }
 
-  fetch(`/search/${searchField.value}/${language}`)
+  fetch(`/news?q=${searchField.value}&lang=${language}`)
     .then((response) => response.json())
     .then(renderData);
 });
 
-
-(function rendering() {
+function rendering() {
   if (!searchField.value) {
     fetch('/latest-news')
       .then((response) => response.json())
       .then(renderData);
   }
-}());
-
-category.addEventListener('change', () =>{
-  console.log(category.value);
 }
 
-// () => {
+category.addEventListener('change', () => {
+  newsContainer.textContent = '';
+  if (category.value) {
+    fetch(`/categorized-news?category=${category.value}`)
+      .then((response) => response.json())
+      .then(renderData);
+  } else {
+    rendering();
+  }
+});
 
-// if (searchField.value) {
-//   search();
-// }
-
-// } else {
-//   // console.log('Hee');
-//   // document.removeChild(removeChild);
-
-// }
+window.onload = rendering();

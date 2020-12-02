@@ -1,9 +1,10 @@
 const fetch = require('node-fetch');
+const URL = require('url').URL;
+const apiKey = process.env.API_KEY;
 
 const searchForNews = (req, res) => {
-  console.log(req.params.inputVal);
-  let url =`https://api.currentsapi.services/v1/search?keywords=${req.params.inputVal}&language=${req.params.inputLanguage}&apiKey=pE2ivILVQvsHP0_nz54Kw7OQB6IvgUiBob10O2FqC-HSDURs`;
-  console.log(url);
+  const endPoint = `https://api.currentsapi.services/v1/search?keywords=${req.query.q}&language=${req.query.lang}&apiKey=${apiKey}`;
+  const url = new URL(endPoint);
   fetch(url)
     .then((body) => body.json())
     .then((response) => res.json(response))
