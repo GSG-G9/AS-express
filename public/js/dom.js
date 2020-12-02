@@ -1,6 +1,7 @@
 // const { default: fetch } = require('node-fetch');
 
 const category = document.getElementById('categories-select');
+const inputLanguage = document.getElementById('languages-select');
 const displayButton = document.getElementById('display-button');
 const newsContainer = document.getElementById('news-container');
 const searchField = document.getElementById('search-field');
@@ -34,20 +35,28 @@ const renderData = (data) => {
 };
 
 searchBtn.addEventListener('click', () => {
-  fetch(`/search/${searchField.value}`)
+  let language = 'en';
+  if (inputLanguage.value) {
+    language = inputLanguage.value;
+  }
+
+  fetch(`/search/${searchField.value}/${language}`)
     .then((response) => response.json())
     .then(renderData);
 });
 
-function rendering() {
+
+(function rendering() {
   if (!searchField.value) {
     fetch('/latest-news')
       .then((response) => response.json())
       .then(renderData);
   }
-}
+}());
 
-rendering();
+category.addEventListener('change', () =>{
+  console.log(category.value);
+}
 
 // () => {
 
